@@ -1,6 +1,6 @@
 #include "p_func.h"
 #include <string.h>
-#define NUM_THREADS	5
+#define NUM_THREADS	85
 
 int main(int argc, char const *argv[]) {
   pthread_t threads[NUM_THREADS];
@@ -10,10 +10,10 @@ int main(int argc, char const *argv[]) {
   void *tab[] = {counter,sleeping};
   int flag = -1;
 
-  arr = (int *)malloc(10 * sizeof(int));
+  arr = (int *)malloc(100 * sizeof(int));
   long long int sum = 0;
 
-  for(int i=0 ; i<10 ; i++)
+  for(int i=0 ; i<100 ; i++)
     arr[i] = 0;
 
   if(argc<2)
@@ -37,8 +37,9 @@ int main(int argc, char const *argv[]) {
   for (t=0 ; t<NUM_THREADS ; t++)
     pthread_join(threads[t],NULL);
 
-  for(int i=0 ; i<10 ; i++)
+  for(int i=0 ; i<100 ; i++)
   {
+    printf("arr[i] = %d \n", arr[i]);
     sum += arr[i];
   }
 

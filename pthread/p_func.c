@@ -24,7 +24,8 @@ void *counter(void *arr)
         break;
       }
   }
-  temp = (int)id%10;
+  temp = (int)id%100;
+  printf("temp = %d\n", temp);
   ar[temp] = rf;
    pthread_exit(NULL);
 }
@@ -58,7 +59,7 @@ void *sleeping(void *arr)
         break;
       }
   }
-  temp = id%10;
+  temp = id%100;
   ar[temp] = rf;
    pthread_exit(NULL);
 }

@@ -1,5 +1,4 @@
 //User level threads library
-#define BILLION  1E9
 // INCLUDES
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +7,6 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
-#include <sys/resource.h>
 #include "threads.h"
 
 // DEFINES
@@ -122,13 +120,10 @@ void InsertWrapper(thread_t *t, thread_queue_t *q)
 // Signal handler
 void Dispatch(int sig)
 {
-	printf("IN DISPATCH\n");
-	struct timespec requestStart, requestEnd;
     if (clean == 1)
     {
         return;
     }
-
     unsigned time_delta = GetCurrentTime() - start_time;
     status_t *s = current->status;
     s->total_exec_time += time_delta;
@@ -139,9 +134,6 @@ void Dispatch(int sig)
     {
         return;
     }
-
-    clock_gettime(CLOCK_REALTIME, &requestStart);
-
     // Itterate through all threads list and deal with them.
     thread_node_t *node = thread_list->head;
     while(node != NULL)
@@ -183,8 +175,6 @@ void Dispatch(int sig)
         InsertWrapper(current, ready_list);
         current->status->state = READY;
     }
-
-
     thread_t *next = GetNextThread();
     current = next;
     status_t *stat = next->status;
@@ -194,16 +184,6 @@ void Dispatch(int sig)
     stat->avg_wait_time = (stat->total_wait_time / (stat->no_of_bursts + 1)); // + 1 b/c num_wait = num_run + 1
     start_time = GetCurrentTime();
     start_timer();
-    
-    clock_gettime(CLOCK_REALTIME, &requestEnd);
-
-// Calculate time it took
-	double accum = ( requestEnd.tv_sec - requestStart.tv_sec )
-	  + ( requestEnd.tv_nsec - requestStart.tv_nsec )
-	  / BILLION;
-	double diff = requestEnd.tv_nsec - requestStart.tv_nsec;
-	printf( "Context Switch Time = %lf\n", diff/1000.00 );
-
     siglongjmp(next->jbuf, 1);
 }
 
