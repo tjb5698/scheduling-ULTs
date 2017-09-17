@@ -1,4 +1,4 @@
-#include "p_func.h"
+#include "functions.h"
 #include <string.h>
 #define NUM_THREADS	85
 

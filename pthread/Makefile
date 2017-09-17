@@ -5,11 +5,11 @@ default: kt_test
 # program.o: program.c $(HEADERS)
 #     gcc -c program.c -o program.o
 
-p_func.o: p_func.c
-	gcc -c -std=gnu99 -pthread p_func.c -o p_func.o -lrt
+functions.o: functions.c
+	gcc -c -std=gnu99 -pthread functions.c -o functions.o -lrt
 
-kt_test: kt_test.c p_func.o
-	gcc -g -std=gnu99 -pthread kt_test.c p_func.o -o kt_test -lrt
+kt_test: kt_test.c functions.o
+	gcc -g -std=gnu99 -pthread kt_test.c functions.o -o kt_test -lrt
 
 clean:
-	-rm -f kt_test p_func.o
+	-rm -f kt_test functions.o
