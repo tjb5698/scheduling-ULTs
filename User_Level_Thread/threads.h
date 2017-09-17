@@ -56,7 +56,7 @@ typedef struct thread_queue_t
 
 address_t translate_address(address_t addr);
 
-thread_t *thread_dequeue(thread_queue_t *q);
+
 thread_t *GetNextThread();
 
 void thread_enqueue(thread_t *t, thread_queue_t *q);

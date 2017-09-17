@@ -70,8 +70,8 @@ unsigned start_time = 0;         /* Time a thread is started */
 extern void thread_enqueue(thread_t*, thread_queue_t*);
 // enqueue t to back of queue
 
-extern thread_t *thread_dequeue(thread_queue_t*);
-// dequeue from front of queue
+
+
 
 extern thread_t* scheduler();
 //implementation of thread scheduler, RR and LOT
