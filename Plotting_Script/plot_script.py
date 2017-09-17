@@ -16,16 +16,13 @@ for line in lines:
 
 x = []
 count = 1
+x.append(1)
 x.append(2)
-x.append(5)
+x.append(4)
 x.append(8)
-x.append(10)
-x.append(15)
-x.append(25)
-x.append(35)
-x.append(55)
-x.append(85)
-x.append(100)
+x.append(16)
+x.append(32)
+
 # for items in y1:
 # 	x.append(count)
 # 	count += 1
