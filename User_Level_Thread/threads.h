@@ -14,6 +14,12 @@ typedef unsigned long address_t;
 typedef unsigned int address_t;
 #endif
 
+// Scheduling Types
+#define FCFS 0 // First Come, First Served
+#define RR   1 // Round Robin
+#define vLOT 2 // Vanilla Lottery
+#define mLOT 3 // Modified Lottery
+
 // Thread Status structure
 typedef struct status_t
 {

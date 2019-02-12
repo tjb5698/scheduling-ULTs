@@ -63,7 +63,7 @@ thread_queue_t *thread_list; /* the list of all threads */
 thread_queue_t *ready_list;  /* the list of all ready threads */
 thread_t *current;           /* the current running thread */
 int next_thread = 0;         /* Used for assigning IDs */
-int scheduling_type;         /* Scheduling type 0 = RR, 1 = LOT */
+int scheduling_type;         /* Scheduling type 0 = FCFS, 1 = RR, 2 = vLOT, 3 = mLOT */
 int clean = 0;               /* if in cleanup, exit out of dispatch */
 unsigned start_time = 0;     /* Time a thread is started */
 
@@ -71,7 +71,7 @@ extern void thread_enqueue(thread_t *, thread_queue_t *);
 // enqueue to back of queue
 
 extern thread_t *scheduler();
-//implementation of thread scheduler, RR and LOT
+//implementation of thread scheduler, RR and vLOT and mLOT
 
 int CreateThread(void (*f)(void), int weight)
 {
@@ -105,7 +105,7 @@ int CreateThread(void (*f)(void), int weight)
 
 void InsertWrapper(thread_t *t, thread_queue_t *q)
 {
-    if (scheduling_type == 0)
+    if (scheduling_type == RR)
     {
         thread_enqueue(t, q);
     }
@@ -351,7 +351,7 @@ void SleepThread(int sec)
 void setup(int schedule)
 {
     srand(time(NULL));
-    scheduling_type = schedule; //RR == 0, LOT == 1, FCFS == 2
+    scheduling_type = schedule; // FCFS == 0, RR == 1, vLOT == 2, mLOT == 3
     ready_list = malloc(sizeof(thread_queue_t));
     ready_list->head = ready_list->tail = NULL;
     ready_list->size = 0;

@@ -36,13 +36,15 @@ thread_t *scheduler()
         return NULL;
     switch (scheduling_type)
     {
-    case 0: // Round Robin
+    case RR: // Round Robin
 
-        //Put your code here
-    case 1: // Lottery
+
+    case vLOT: // Lottery
             //Put your code here
 
-    case 2: //First come first serve
+    case mLOT:
+
+    case FCFS: //First come first serve
         return ready_list->head->thread;
     default:
         return NULL;
