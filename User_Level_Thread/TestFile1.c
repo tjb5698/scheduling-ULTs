@@ -1,5 +1,7 @@
 // Project 2: User level thread library
 // Test file
+// DO NOT MODIFY
+
 #include "threads.h"
 
 void simple_thread()
