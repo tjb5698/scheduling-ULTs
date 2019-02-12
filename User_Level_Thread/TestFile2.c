@@ -7,7 +7,7 @@ void simple_thread()
 {
     int i = 0;
     int j = 0;
-    while(1)
+    while (1)
     {
         if (i % 100000000 == 0)
         {
@@ -22,13 +22,12 @@ void simple_thread()
         }
         i++;
     }
-
 }
 void clean_up_thread()
 {
     int i = 0;
     int j = 0;
-    while(1)
+    while (1)
     {
         if (i % 100000000 == 0)
         {
@@ -43,7 +42,6 @@ void clean_up_thread()
         }
         i++;
     }
-
 }
 
 void sleep_test()
@@ -51,7 +49,7 @@ void sleep_test()
     int i = 0;
     int j = 0;
     int sleep = 0;
-    while(1)
+    while (1)
     {
         if (sleep == 1)
         {
@@ -79,7 +77,7 @@ void suspend_test()
 {
     int i = 0;
     int j = 0;
-    while(1)
+    while (1)
     {
         if (i % 100000000 == 0)
         {
@@ -107,7 +105,7 @@ void yield_test()
 {
     int i = 0;
     int j = 0;
-    while(1)
+    while (1)
     {
         if (i % 100000000 == 0)
         {
@@ -129,7 +127,7 @@ void delete_test()
 {
     int i = 0;
     int j = 0;
-    while(1)
+    while (1)
     {
         if (i % 100000000 == 0)
         {
@@ -151,7 +149,7 @@ void delete_other_test()
 {
     int i = 0;
     int j = 0;
-    while(1)
+    while (1)
     {
         if (i % 100000000 == 0)
         {
@@ -173,7 +171,7 @@ void create_test()
 {
     int i = 0;
     int j = 0;
-    while(1)
+    while (1)
     {
         if (i % 100000000 == 0)
         {
@@ -185,7 +183,7 @@ void create_test()
         {
             j++;
             printf("CREATING A NEW THREAD\n");
-            CreateThread(simple_thread, 1); 
+            CreateThread(simple_thread, 1);
         }
         i++;
     }
@@ -209,17 +207,16 @@ int main(int argc, char *argv[])
     else if (strcmp(argv[1], "FCFS") == 0)
     {
         setup(2); // FCFS
-    }	
+    }
     else
     {
         return 1;
     }
 
-    CreateThread(clean_up_thread, 10);        // 0
-    CreateThread(clean_up_thread, 5);        // 1
-    CreateThread(clean_up_thread, 5);        // 2
-    CreateThread(clean_up_thread, 10);        // 3
-	
+    CreateThread(clean_up_thread, 10); // 0
+    CreateThread(clean_up_thread, 5);  // 1
+    CreateThread(clean_up_thread, 5);  // 2
+    CreateThread(clean_up_thread, 10); // 3
 
     Go();
 

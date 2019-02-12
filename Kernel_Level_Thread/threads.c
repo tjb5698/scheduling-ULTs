@@ -12,7 +12,7 @@
 // DEFINES
 #define SECOND 1000000
 #define MAX_NO_OF_THREADS 100 /* in any state */
-#define STACK_SIZE 10000 //4096
+#define STACK_SIZE 10000      //4096
 #define TIME_QUANTUM 1
 
 // Black box code
@@ -31,8 +31,8 @@ address_t translate_address(address_t addr)
     address_t ret;
     asm volatile("xor    %%fs:0x30,%0\n"
                  "rol    $0x11,%0\n"
-                 : "=g" (ret)
-                 : "0" (addr));
+                 : "=g"(ret)
+                 : "0"(addr));
     return ret;
 }
 
@@ -50,8 +50,8 @@ address_t translate_address(address_t addr)
     address_t ret;
     asm volatile("xor    %%gs:0x18,%0\n"
                  "rol    $0x9,%0\n"
-                 : "=g" (ret)
-                 : "0" (addr));
+                 : "=g"(ret)
+                 : "0"(addr));
     return ret;
 }
 
@@ -59,24 +59,23 @@ address_t translate_address(address_t addr)
 ////////////////////////////////////////////////////////////////////////
 
 // Global variables
-thread_queue_t *thread_list;     /* the list of all threads */
-thread_queue_t *ready_list;      /* the list of all ready threads */
-thread_t *current;               /* the current running thread */
-int next_thread = 0;             /* Used for assigning IDs */
-int scheduling_type;             /* Scheduling type 0 = RR, 1 = LOT */
-int clean = 0;                   /* if in cleanup, exit out of dispatch */
-unsigned start_time = 0;         /* Time a thread is started */
+thread_queue_t *thread_list; /* the list of all threads */
+thread_queue_t *ready_list;  /* the list of all ready threads */
+thread_t *current;           /* the current running thread */
+int next_thread = 0;         /* Used for assigning IDs */
+int scheduling_type;         /* Scheduling type 0 = RR, 1 = LOT */
+int clean = 0;               /* if in cleanup, exit out of dispatch */
+unsigned start_time = 0;     /* Time a thread is started */
 
-extern void thread_enqueue(thread_t*, thread_queue_t*);
+extern void thread_enqueue(thread_t *, thread_queue_t *);
 // enqueue t to back of queue
-
 
 // dequeue from front of queue
 
-extern thread_t* scheduler();
+extern thread_t *scheduler();
 //implementation of thread scheduler, RR and LOT
 
-int CreateThread(void (*f) (void), int priority)
+int CreateThread(void (*f)(void), int priority)
 {
     // Return -1 if fail
     if (thread_list->size + 1 > MAX_NO_OF_THREADS)
@@ -134,11 +133,11 @@ void Dispatch(int sig)
     {
         return;
     }
-    // Itterate through all threads list and deal with them.
+    // Iterate through all threads list and deal with them.
     thread_node_t *node = thread_list->head;
-    while(node != NULL)
+    while (node != NULL)
     {
-        switch(node->thread->status->state)
+        switch (node->thread->status->state)
         {
             // Do nothing
         case READY:
@@ -163,7 +162,7 @@ void Dispatch(int sig)
     }
     // Iterate through ready_queue to update wait times
     thread_node_t *ready = ready_list->head;
-    while(ready != NULL)
+    while (ready != NULL)
     {
         ready->thread->status->total_wait_time += time_delta;
         ready = ready->next;
@@ -195,7 +194,8 @@ void Go()
     start_timer();
     start_time = GetCurrentTime();
     siglongjmp(t->jbuf, 1);
-    while(1);
+    while (1)
+        ;
 }
 
 int GetMyId()
@@ -211,7 +211,7 @@ thread_t *GetThread(int thread_id)
     }
 
     thread_node_t *node = thread_list->head;
-    while(node != NULL && node->thread->status->id != thread_id)
+    while (node != NULL && node->thread->status->id != thread_id)
     {
         node = node->next;
     }
@@ -244,16 +244,17 @@ int RemoveFromList(int thread_id, thread_queue_t *q)
     thread_node_t *node = q->head;
     thread_node_t *prev_node = NULL;
     // Find node with corresponding thread_id
-    if (!node){
+    if (!node)
+    {
         return -1;
     }
-    while(node->next != NULL && node->thread->status->id != thread_id)
+    while (node->next != NULL && node->thread->status->id != thread_id)
     {
         prev_node = node;
         node = node->next;
     }
     // If it is not found return -1
-    if(node->thread->status->id != thread_id)
+    if (node->thread->status->id != thread_id)
     {
         return -1;
     }
@@ -276,7 +277,7 @@ int RemoveFromList(int thread_id, thread_queue_t *q)
         prev_node->next = node->next;
     }
     free(node);
-    (q->size) --;
+    (q->size)--;
     return 0;
 }
 
@@ -358,25 +359,23 @@ void setup(int schedule)
     signal(SIGVTALRM, Dispatch);
 }
 
-
 void start_timer()
 {
     struct itimerval tv;
-    tv.it_value.tv_sec = TIME_QUANTUM;     //time of first timer
-    tv.it_value.tv_usec = 0;               //time of first timer
-    tv.it_interval.tv_sec = 0;             //time of all timers but the first one
-    tv.it_interval.tv_usec = 0;            //time of all timers but the first one
+    tv.it_value.tv_sec = TIME_QUANTUM; //time of first timer
+    tv.it_value.tv_usec = 0;           //time of first timer
+    tv.it_interval.tv_sec = 0;         //time of all timers but the first one
+    tv.it_interval.tv_usec = 0;        //time of all timers but the first one
     setitimer(ITIMER_VIRTUAL, &tv, NULL);
 }
-
 
 //Get the head of thread queue
 thread_t *GetNextThread()
 {
-	return scheduler();
+    return scheduler();
 }
 
-/*Print the status of all threads and kill all threads. 
+/*Print the status of all threads and kill all threads.
 In other words, capture the last status of all threads.*/
 
 void CleanUp()
@@ -384,38 +383,39 @@ void CleanUp()
     clean = 1;
     // Print contents of status struct
     thread_node_t *node = thread_list->head;
-    while(NULL != node)
+    while (NULL != node)
     {
         thread_t *t = node->thread;
         status_t *s = t->status;
         printf("thread %d info:\n", s->id);
-        switch(s->state)
+        switch (s->state)
         {
-            case(RUNNING):
-                printf("thread state = RUNNING\n");
-                break;
-            case(READY):
-                printf("thread state = READY\n");
-                break;
-            case(SLEEPING):
-                printf("thread state = SLEEPING\n");
-                break;
-            case(SUSPENDED):
-                printf("thread state = SUSPENDED\n");
-                break;
-            case(FINISHED):
-                printf("thread state = FINISHED\n");
-                break;
+        case (RUNNING):
+            printf("thread state = RUNNING\n");
+            break;
+        case (READY):
+            printf("thread state = READY\n");
+            break;
+        case (SLEEPING):
+            printf("thread state = SLEEPING\n");
+            break;
+        case (SUSPENDED):
+            printf("thread state = SUSPENDED\n");
+            break;
+        case (FINISHED):
+            printf("thread state = FINISHED\n");
+            break;
         }
         printf("num_runs = %d\ntotal_exec_time = %d\n"
-               "total_sleep_time = %d\ntotal_wait_time = %d\navg_exec_time = %d\navg_wait_time = %d\n", s->no_of_bursts, s->total_exec_time, s->total_sleep_time, s->total_wait_time, s->avg_exec_time, s->avg_wait_time);
+               "total_sleep_time = %d\ntotal_wait_time = %d\navg_exec_time = %d\navg_wait_time = %d\n",
+               s->no_of_bursts, s->total_exec_time, s->total_sleep_time, s->total_wait_time, s->avg_exec_time, s->avg_wait_time);
         node = node->next;
     }
     // delete all threads
     // free up readyQ
     node = ready_list->head;
     thread_node_t *next;
-    while(NULL != node)
+    while (NULL != node)
     {
         next = node->next;
         RemoveFromList(node->thread->status->id, ready_list);
@@ -424,7 +424,7 @@ void CleanUp()
     free(ready_list);
     //free up threads
     node = thread_list->head;
-    while(NULL != node)
+    while (NULL != node)
     {
         next = node->next;
         thread_t *t = node->thread;

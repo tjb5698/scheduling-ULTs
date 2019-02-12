@@ -18,7 +18,14 @@ typedef unsigned int address_t;
 typedef struct status_t
 {
     int id;
-    enum {RUNNING, READY, SLEEPING, SUSPENDED, FINISHED} state;
+    enum
+    {
+        RUNNING,
+        READY,
+        SLEEPING,
+        SUSPENDED,
+        FINISHED
+    } state;
     unsigned no_of_bursts;
     unsigned total_exec_time;
     unsigned total_sleep_time;
@@ -56,7 +63,6 @@ typedef struct thread_queue_t
 
 address_t translate_address(address_t addr);
 
-
 thread_t *GetNextThread();
 
 void thread_enqueue(thread_t *t, thread_queue_t *q);
@@ -68,7 +74,7 @@ void Go();
 void CleanUp();
 void start_timer();
 void SleepThread(int sec);
-int CreateThread(void (*f) (void), int priority);
+int CreateThread(void (*f)(void), int priority);
 int RemoveFromList(int thread_id, thread_queue_t *q);
 int GetMyId();
 int DeleteThread(int thread_id);
