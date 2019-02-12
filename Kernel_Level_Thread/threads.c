@@ -1,3 +1,5 @@
+/**** DO NOT MODIFY THIS FILE ****/
+
 //User level threads library
 // INCLUDES
 #include <stdio.h>
@@ -63,17 +65,15 @@ thread_queue_t *thread_list; /* the list of all threads */
 thread_queue_t *ready_list;  /* the list of all ready threads */
 thread_t *current;           /* the current running thread */
 int next_thread = 0;         /* Used for assigning IDs */
-int scheduling_type;         /* Scheduling type 0 = RR, 1 = LOT */
+int scheduling_type;         /* Scheduling type 0 = FCFS, 1 = RR, 2 = vLOT, 3 = mLOT */
 int clean = 0;               /* if in cleanup, exit out of dispatch */
 unsigned start_time = 0;     /* Time a thread is started */
 
 extern void thread_enqueue(thread_t *, thread_queue_t *);
-// enqueue t to back of queue
-
-// dequeue from front of queue
+// enqueue to back of queue
 
 extern thread_t *scheduler();
-//implementation of thread scheduler, RR and LOT
+//implementation of thread scheduler, RR and vLOT and mLOT
 
 int CreateThread(void (*f)(void), int weight)
 {
@@ -88,6 +88,15 @@ int CreateThread(void (*f)(void), int weight)
     thread->status = malloc(sizeof(status_t));
     thread->stack = malloc(STACK_SIZE);
     thread->status->id = next_thread;
+    thread->status->no_of_bursts = 0;
+    thread->status->no_of_continuous_bursts = 0;
+    thread->status->total_exec_time = 0;
+    thread->status->total_sleep_time = 0;
+    thread->status->total_wait_time = 0;
+    thread->status->avg_exec_time = 0;
+    thread->status->avg_wait_time = 0;
+    thread->status->avg_continuous_exec_time = 0;
+    thread->status->wake_time = 0;
     thread->weight = weight;
     next_thread++;
     thread->status->state = READY;
@@ -101,12 +110,13 @@ int CreateThread(void (*f)(void), int weight)
 
     thread_enqueue(thread, ready_list);
     thread_enqueue(thread, thread_list);
+
     return thread->status->id;
 }
 
 void InsertWrapper(thread_t *t, thread_queue_t *q)
 {
-    if (scheduling_type == 0)
+    if (scheduling_type == RR)
     {
         thread_enqueue(t, q);
     }
@@ -174,12 +184,18 @@ void Dispatch(int sig)
         InsertWrapper(current, ready_list);
         current->status->state = READY;
     }
+    thread_t *prev = current;
     thread_t *next = GetNextThread();
     current = next;
     status_t *stat = next->status;
     stat->state = RUNNING;
     stat->no_of_bursts++;
+    // If the same thread was chosen, then this is a continuous burst
+    if (prev != current) {
+        stat->no_of_continuous_bursts++;
+    }
     stat->avg_exec_time = (stat->total_exec_time / stat->no_of_bursts);
+    stat->avg_continuous_exec_time = (stat->total_exec_time / stat->no_of_continuous_bursts);
     stat->avg_wait_time = (stat->total_wait_time / (stat->no_of_bursts + 1)); // + 1 b/c num_wait = num_run + 1
     start_time = GetCurrentTime();
     start_timer();
@@ -215,10 +231,12 @@ thread_t *GetThread(int thread_id)
     {
         node = node->next;
     }
+
     if (node == NULL)
     {
         return NULL;
     }
+
     return node->thread;
 }
 
@@ -236,6 +254,7 @@ int DeleteThread(int thread_id)
     {
         YieldCPU();
     }
+
     return 0;
 }
 
@@ -243,6 +262,7 @@ int RemoveFromList(int thread_id, thread_queue_t *q)
 {
     thread_node_t *node = q->head;
     thread_node_t *prev_node = NULL;
+
     // Find node with corresponding thread_id
     if (!node)
     {
@@ -270,7 +290,6 @@ int RemoveFromList(int thread_id, thread_queue_t *q)
         prev_node->next = NULL;
         q->tail = prev_node;
     }
-
     // Otherwise in middle / end of list
     else
     {
@@ -307,10 +326,12 @@ int SuspendThread(int thread_id)
     thread_t *t = GetThread(thread_id);
     if (t == NULL)
         return -1;
+
     t->status->state = SUSPENDED;
     RemoveFromList(thread_id, ready_list);
     if (current->status->id == thread_id)
         YieldCPU();
+
     return thread_id;
 }
 
@@ -319,8 +340,10 @@ int ResumeThread(int thread_id)
     thread_t *t = GetThread(thread_id);
     if (t == NULL)
         return -1;
+
     if (t->status->state != SUSPENDED)
         return thread_id;
+
     thread_enqueue(t, ready_list);
     t->status->state = READY;
     return thread_id;
@@ -345,7 +368,7 @@ void SleepThread(int sec)
 void setup(int schedule)
 {
     srand(time(NULL));
-    scheduling_type = schedule; //RR=0, LOT == 1, FCFS == 2
+    scheduling_type = schedule; // FCFS == 0, RR == 1, vLOT == 2, mLOT == 3
     ready_list = malloc(sizeof(thread_queue_t));
     ready_list->head = ready_list->tail = NULL;
     ready_list->size = 0;
@@ -407,8 +430,9 @@ void CleanUp()
             break;
         }
         printf("num_runs = %d\ntotal_exec_time = %d\n"
-               "total_sleep_time = %d\ntotal_wait_time = %d\navg_exec_time = %d\navg_wait_time = %d\n",
-               s->no_of_bursts, s->total_exec_time, s->total_sleep_time, s->total_wait_time, s->avg_exec_time, s->avg_wait_time);
+               "total_sleep_time = %d\ntotal_wait_time = %d\navg_exec_time = %d\navg_wait_time = %d\n"
+               "num_continuous_runs = %d\navg_continuous_exec_time = %d\n\n",
+               s->no_of_bursts, s->total_exec_time, s->total_sleep_time, s->total_wait_time, s->avg_exec_time, s->avg_wait_time, s->no_of_continuous_bursts, s->avg_continuous_exec_time);
         node = node->next;
     }
     // delete all threads

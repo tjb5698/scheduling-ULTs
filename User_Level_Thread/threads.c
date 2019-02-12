@@ -88,6 +88,15 @@ int CreateThread(void (*f)(void), int weight)
     thread->status = malloc(sizeof(status_t));
     thread->stack = malloc(STACK_SIZE);
     thread->status->id = next_thread;
+    thread->status->no_of_bursts = 0;
+    thread->status->no_of_continuous_bursts = 0;
+    thread->status->total_exec_time = 0;
+    thread->status->total_sleep_time = 0;
+    thread->status->total_wait_time = 0;
+    thread->status->avg_exec_time = 0;
+    thread->status->avg_wait_time = 0;
+    thread->status->avg_continuous_exec_time = 0;
+    thread->status->wake_time = 0;
     thread->weight = weight;
     next_thread++;
     thread->status->state = READY;
@@ -175,12 +184,18 @@ void Dispatch(int sig)
         InsertWrapper(current, ready_list);
         current->status->state = READY;
     }
+    thread_t *prev = current;
     thread_t *next = GetNextThread();
     current = next;
     status_t *stat = next->status;
     stat->state = RUNNING;
     stat->no_of_bursts++;
+    // If the same thread was chosen, then this is a continuous burst
+    if (prev != current) {
+        stat->no_of_continuous_bursts++;
+    }
     stat->avg_exec_time = (stat->total_exec_time / stat->no_of_bursts);
+    stat->avg_continuous_exec_time = (stat->total_exec_time / stat->no_of_continuous_bursts);
     stat->avg_wait_time = (stat->total_wait_time / (stat->no_of_bursts + 1)); // + 1 b/c num_wait = num_run + 1
     start_time = GetCurrentTime();
     start_timer();
@@ -415,8 +430,9 @@ void CleanUp()
             break;
         }
         printf("num_runs = %d\ntotal_exec_time = %d\n"
-               "total_sleep_time = %d\ntotal_wait_time = %d\navg_exec_time = %d\navg_wait_time = %d\n\n",
-               s->no_of_bursts, s->total_exec_time, s->total_sleep_time, s->total_wait_time, s->avg_exec_time, s->avg_wait_time);
+               "total_sleep_time = %d\ntotal_wait_time = %d\navg_exec_time = %d\navg_wait_time = %d\n"
+               "num_continuous_runs = %d\navg_continuous_exec_time = %d\n\n",
+               s->no_of_bursts, s->total_exec_time, s->total_sleep_time, s->total_wait_time, s->avg_exec_time, s->avg_wait_time, s->no_of_continuous_bursts, s->avg_continuous_exec_time);
         node = node->next;
     }
     // delete all threads
