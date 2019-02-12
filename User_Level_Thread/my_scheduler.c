@@ -30,7 +30,7 @@ void thread_enqueue(thread_t *t, thread_queue_t *q)
 
 thread_t *scheduler()
 {
-    int number, priority = 0;
+    int number, weight = 0;
     thread_node_t *node;
     if (ready_list->size == 0)
         return NULL;

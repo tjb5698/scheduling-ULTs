@@ -75,7 +75,7 @@ extern void thread_enqueue(thread_t *, thread_queue_t *);
 extern thread_t *scheduler();
 //implementation of thread scheduler, RR and LOT
 
-int CreateThread(void (*f)(void), int priority)
+int CreateThread(void (*f)(void), int weight)
 {
     // Return -1 if fail
     if (thread_list->size + 1 > MAX_NO_OF_THREADS)
@@ -88,7 +88,7 @@ int CreateThread(void (*f)(void), int priority)
     thread->status = malloc(sizeof(status_t));
     thread->stack = malloc(STACK_SIZE);
     thread->status->id = next_thread;
-    thread->priority = priority;
+    thread->weight = weight;
     next_thread++;
     thread->status->state = READY;
 

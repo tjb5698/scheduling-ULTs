@@ -40,7 +40,7 @@ typedef struct thread_t
 {
     char *stack;
     status_t *status;
-    int priority;
+    int weight;
     sigjmp_buf jbuf;
     address_t pc;
     address_t sp;
@@ -74,7 +74,7 @@ void Go();
 void CleanUp();
 void start_timer();
 void SleepThread(int sec);
-int CreateThread(void (*f)(void), int priority);
+int CreateThread(void (*f)(void), int weight);
 int RemoveFromList(int thread_id, thread_queue_t *q);
 int GetMyId();
 int DeleteThread(int thread_id);
