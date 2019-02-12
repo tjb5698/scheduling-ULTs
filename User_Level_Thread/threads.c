@@ -1,3 +1,5 @@
+/**** DO NOT MODIFY THIS FILE ****/
+
 //User level threads library
 // INCLUDES
 #include <stdio.h>
