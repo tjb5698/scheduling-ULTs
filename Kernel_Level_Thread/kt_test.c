@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
 
   if (argc < 2)
   {
-    printf("Argument missing !!\n");
+    printf("Usage: %s [counter] | [sleeping]\n", argv[0]);
     return -1;
   }
 
@@ -42,7 +42,7 @@ int main(int argc, char const *argv[])
 
   for (int i = 0; i < 100; i++)
   {
-    printf("arr[i] = %d \n", arr[i]);
+    printf("arr[%d] = %d \n", i, arr[i]);
     sum += arr[i];
   }
 

@@ -45,11 +45,11 @@ void *sleeping(void *arr)
     long long int rf = 0;
     if (id % 2 == 0)
     {
-        sleep(3);
+        sleep(2);
     }
     else
     {
-        sleep(2);
+        sleep(7);
     }
     while (1)
     {

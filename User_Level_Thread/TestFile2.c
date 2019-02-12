@@ -13,12 +13,12 @@ void simple_thread()
         if (i % 100000000 == 0)
         {
             int id = GetMyId();
-            printf("simple_thread tid: %d j = %d\n", id, j);
+            printf("simple_thread tid: %d; j = %d\n", id, j);
             j++;
         }
         if (j == 10)
         {
-            printf("DELETING MYSELF tid: %d\n", GetMyId());
+            printf("DELETING MYSELF (tid: %d)\n", GetMyId());
             DeleteThread(GetMyId());
         }
         i++;
@@ -33,10 +33,10 @@ void clean_up_thread()
         if (i % 100000000 == 0)
         {
             int id = GetMyId();
-            printf("simple_thread tid: %d j = %d\n", id, j);
+            printf("simple_thread tid: %d; j = %d\n", id, j);
             j++;
         }
-        if (j == 20)
+        if (j == 10)
         {
             printf("CLEANUP()\n");
             CleanUp();
@@ -44,7 +44,6 @@ void clean_up_thread()
         i++;
     }
 }
-
 void sleep_test()
 {
     int i = 0;
@@ -60,7 +59,7 @@ void sleep_test()
         if (i % 100000000 == 0)
         {
             int id = GetMyId();
-            printf("sleep_thread tid: %d j = %d\n", id, j);
+            printf("sleep_thread tid: %d; j = %d)\n", id, j);
             j++;
         }
         if (j == 5)
@@ -83,7 +82,7 @@ void suspend_test()
         if (i % 100000000 == 0)
         {
             int id = GetMyId();
-            printf("suspend_test tid: %d j = %d\n", id, j);
+            printf("suspend_test tid: %d; j = %d\n", id, j);
             j++;
         }
         if (j == 10)
@@ -111,13 +110,13 @@ void yield_test()
         if (i % 100000000 == 0)
         {
             int id = GetMyId();
-            printf("yield_test tid: %d j = %d\n", id, j);
+            printf("yield_test tid: %d; j = %d\n", id, j);
             j++;
         }
         if (j % 5 == 0)
         {
             j++;
-            printf("YIELDING CPU tid: %d\n", GetMyId());
+            printf("YIELDING CPU (tid: %d)\n", GetMyId());
             YieldCPU();
         }
         i++;
@@ -133,13 +132,13 @@ void delete_test()
         if (i % 100000000 == 0)
         {
             int id = GetMyId();
-            printf("delete_test tid: %d j = %d\n", id, j);
+            printf("delete_test tid: %d; j = %d\n", id, j);
             j++;
         }
         if (j % 25 == 0)
         {
             j++;
-            printf("DELETING MYSELF tid: %d\n", GetMyId());
+            printf("DELETING MYSELF (tid: %d)\n", GetMyId());
             DeleteThread(GetMyId());
         }
         i++;
@@ -155,7 +154,7 @@ void delete_other_test()
         if (i % 100000000 == 0)
         {
             int id = GetMyId();
-            printf("delete_other_test tid: %d j = %d\n", id, j);
+            printf("delete_other_test tid: %d; j = %d\n", id, j);
             j++;
         }
         if (j == 20)
@@ -177,7 +176,7 @@ void create_test()
         if (i % 100000000 == 0)
         {
             int id = GetMyId();
-            printf("create_test tid: %d j = %d\n", id, j);
+            printf("create_test tid: %d; j = %d\n", id, j);
             j++;
         }
         if (j == 30)
