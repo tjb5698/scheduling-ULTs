@@ -13,3 +13,6 @@ kt_test: kt_test.c functions.o
 
 clean:
 	-rm -f kt_test functions.o
+
+.PHONY: clean
+
