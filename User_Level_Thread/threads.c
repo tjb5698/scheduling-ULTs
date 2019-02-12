@@ -206,6 +206,8 @@ void Go()
     thread_t *t = GetNextThread();
     current = t;
     t->status->state = RUNNING;
+    t->status->no_of_bursts++;
+    t->status->no_of_continuous_bursts++;
     start_timer();
     start_time = GetCurrentTime();
     siglongjmp(t->jbuf, 1);
