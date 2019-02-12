@@ -159,7 +159,6 @@ void Dispatch(int sig)
         case SLEEPING:
             if (GetCurrentTime() >= node->thread->status->wake_time)
             {
-                printf("wake time\n");
                 thread_enqueue(node->thread, ready_list);
                 node->thread->status->state = READY;
             }

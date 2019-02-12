@@ -25,7 +25,6 @@ void *counter(void *arr)
         }
     }
     temp = (int)id % 100;
-    printf("temp = %d\n", temp);
     ar[temp] = rf;
     pthread_exit(NULL);
 }
