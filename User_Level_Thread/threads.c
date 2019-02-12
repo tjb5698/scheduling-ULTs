@@ -116,15 +116,7 @@ int CreateThread(void (*f)(void), int weight)
 
 void InsertWrapper(thread_t *t, thread_queue_t *q)
 {
-    if (scheduling_type == RR)
-    {
-        thread_enqueue(t, q);
-    }
-    else
-    {
-        //InsertAtHead(t, q);
-        return;
-    }
+    InsertAtHead(t, q);
 }
 // Signal handler
 void Dispatch(int sig)
@@ -173,7 +165,12 @@ void Dispatch(int sig)
     thread_node_t *ready = ready_list->head;
     while (ready != NULL)
     {
-        ready->thread->status->total_wait_time += time_delta;
+        if (ready->thread->status->state == READY)
+        {
+            // only add wait time for ready threads (in case something else gets in here)
+            ready->thread->status->total_wait_time += time_delta;
+        }
+
         ready = ready->next;
     }
 
@@ -186,16 +183,27 @@ void Dispatch(int sig)
     thread_t *prev = current;
     thread_t *next = GetNextThread();
     current = next;
+    RemoveFromList(next->status->id, ready_list); // remove from ready list if still in it
     status_t *stat = next->status;
     stat->state = RUNNING;
     stat->no_of_bursts++;
     // If the same thread was chosen, then this is a continuous burst
-    if (prev != current) {
+    if (prev != current)
+    {
         stat->no_of_continuous_bursts++;
     }
-    stat->avg_exec_time = (stat->total_exec_time / stat->no_of_bursts);
-    stat->avg_continuous_exec_time = (stat->total_exec_time / stat->no_of_continuous_bursts);
-    stat->avg_wait_time = (stat->total_wait_time / (stat->no_of_bursts + 1)); // + 1 b/c num_wait = num_run + 1
+    // Update all thread statistics, because some of them may have changed
+    thread_node_t *thread_node = thread_list->head;
+    while (thread_node != NULL)
+    {
+        status_t *stat = thread_node->thread->status;
+        if (stat->no_of_bursts) {
+            stat->avg_exec_time = (stat->total_exec_time / stat->no_of_bursts);
+            stat->avg_continuous_exec_time = (stat->total_exec_time / stat->no_of_continuous_bursts);
+        }
+        stat->avg_wait_time = (stat->total_wait_time / (stat->no_of_bursts + 1)); // + 1 b/c num_wait = num_run + 1
+        thread_node = thread_node->next;
+    }
     start_time = GetCurrentTime();
     start_timer();
     siglongjmp(next->jbuf, 1);
@@ -205,6 +213,8 @@ void Go()
 {
     thread_t *t = GetNextThread();
     current = t;
+    RemoveFromList(current->status->id, ready_list); // remove from ready list if still there
+
     t->status->state = RUNNING;
     t->status->no_of_bursts++;
     t->status->no_of_continuous_bursts++;
@@ -314,11 +324,13 @@ int GetStatus(int thread_id, status_t *status)
     status->id = t->status->id;
     status->state = t->status->state;
     status->no_of_bursts = t->status->no_of_bursts;
+    status->no_of_continuous_bursts = t->status->no_of_continuous_bursts;
     status->total_exec_time = t->status->total_exec_time;
     status->total_sleep_time = t->status->total_sleep_time;
     status->total_wait_time = t->status->total_wait_time;
     status->avg_exec_time = t->status->avg_exec_time;
     status->avg_wait_time = t->status->avg_wait_time;
+    status->avg_continuous_exec_time = t->status->avg_continuous_exec_time;
     return t->status->id;
 }
 

@@ -41,11 +41,11 @@ void thread_enqueue(thread_t *t, thread_queue_t *q)
 
 thread_t *scheduler()
 {
-    /**** You may use these declarations in your implementation ****/
-    int number, weight = 0;
-    thread_node_t *node;
+    /**** You may also add variable declarations here, or in the sections below ****/
 
-    /**** You may also add other declarations here, or in the sections below ****/
+    /**** End variable declarations ****/
+
+    /**** NOTE: the last running thread will be at the head of the ready list, it is up to you to move it where it needs to be ****/
 
     if (ready_list->size == 0)
         return NULL;

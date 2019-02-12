@@ -76,6 +76,7 @@ address_t translate_address(address_t addr);
 thread_t *GetNextThread();
 
 void thread_enqueue(thread_t *t, thread_queue_t *q);
+void InsertAtHead(thread_t *t, thread_queue_t *q);
 void setup(int);
 void print_list(thread_queue_t *q);
 void YieldCPU();
