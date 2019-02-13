@@ -4,8 +4,6 @@
 
 #include "threads.h"
 
-#include "threads.h"
-
 void simple_thread()
 {
     int i = 0;
