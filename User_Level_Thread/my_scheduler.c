@@ -23,7 +23,7 @@ extern thread_t* current;
 // This function is called once by the test file, before the thread are created
 // Feel free to modify this function as much as you want, to initialize variables or structs for instance
 void setup(int schedule)
-{   
+{
     printf("Student IDs:\nID_1: %s\nID_2: %s\n", ID_1, ID_2);
     srand(time(NULL));
     scheduling_type = schedule; // FCFS == 0, RR == 1, vLOT == 2, mLOT == 3
@@ -48,11 +48,13 @@ void InsertWrapper(thread_t* t, thread_queue_t* q)
 }
 
 // This function is called whenever a context switch is starting
-void BeginContextSwitch(){
+void BeginContextSwitch()
+{
 }
 
 // This function is called whenever a context switch is done
-void EndContextSwitch(){
+void EndContextSwitch()
+{
 }
 
 // Add extra functions you want here
@@ -65,8 +67,8 @@ thread_t* scheduler()
 
     /**** End variable declarations ****/
 
-    /**** NOTE: the last running thread will be at the head of the ready list, it is up to you to move it where it needs to be ****/
-    if (ready_list->size == 0)
+    /**** NOTE: the last running thread will be at in the `current` variable ****/
+    if (ready_list->size == 0 && current == NULL)
         return NULL;
     switch (scheduling_type) {
     case RR: // Round Robin
@@ -89,7 +91,19 @@ thread_t* scheduler()
 
     case FCFS: // First Come, First Served
         /**** DO NOT MODIFY ****/
-        return ready_list->head->thread;
+        if (current == NULL) {
+            // We did not previously have a running thread
+            return ready_list->head->thread;
+        } else {
+            // We had a running thread...
+            if (current->status->state == FINISHED || current->status->state == SLEEPING || current->status->state == SUSPENDED) {
+                // ... that cannot run anymore
+                return ready_list->head->thread;
+            } else {
+                // ... that can still run
+                return current;
+            }
+        }
     default:
         return NULL;
     }

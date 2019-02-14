@@ -161,12 +161,7 @@ void Dispatch(int sig)
 
         ready = ready->next;
     }
-
-    // Schedule new thread
-    if (current->status->state == RUNNING) {
-        InsertWrapper(current, ready_list);
-        current->status->state = READY;
-    }
+    // Get the new scheduled thread
     thread_t* prev = current;
     thread_t* next = GetNextThread();
     current = next;
