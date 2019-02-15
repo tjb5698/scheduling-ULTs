@@ -165,6 +165,10 @@ void Dispatch(int sig)
     thread_t* prev = current;
     thread_t* next = GetNextThread();
     current = next;
+    // Check if we are done and should cleanup
+    if (next == NULL) {
+        CleanUp();
+    }
     RemoveFromList(next->status->id, ready_list); // remove from ready list if still in it
     status_t* stat = next->status;
     stat->state = RUNNING;
