@@ -63,7 +63,7 @@ void EndContextSwitch()
 // Returns the tne running thread
 thread_t* scheduler()
 {
-    /**** You may also add variablez declarations here, or in the sections below ****/
+    /**** You may also add variable declarations here, or in the sections below ****/
 
     /**** End variable declarations ****/
 
