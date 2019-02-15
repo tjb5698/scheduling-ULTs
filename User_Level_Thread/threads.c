@@ -260,8 +260,13 @@ int RemoveFromList(int thread_id, thread_queue_t* q)
     }
     // Head
     if (node == q->head) {
+        if (node->next == NULL) {
+            // If the tail and the head are the same thing
+            q->tail = NULL;
+        }
         // If the head is to be deleted.
-        q->head = node->next;
+        q->head = node->next; 
+
     }
     // Tail
     else if (node->next == NULL) {
