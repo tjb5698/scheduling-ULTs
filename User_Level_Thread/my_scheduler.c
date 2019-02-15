@@ -68,6 +68,7 @@ thread_t* scheduler()
     /**** End variable declarations ****/
 
     /**** NOTE: the last running thread will be at in the `current` variable ****/
+    // Make sure we still have some work to do
     if (ready_list->size == 0 && current == NULL)
         return NULL;
     switch (scheduling_type) {
@@ -98,7 +99,11 @@ thread_t* scheduler()
             // We had a running thread...
             if (current->status->state == FINISHED || current->status->state == SLEEPING || current->status->state == SUSPENDED) {
                 // ... that cannot run anymore
-                return ready_list->head->thread;
+                if (ready_list->size == 0) {
+                    return NULL;
+                } else {
+                    return ready_list->head->thread;
+                }
             } else {
                 // ... that can still run
                 return current;
