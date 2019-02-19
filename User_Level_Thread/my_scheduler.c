@@ -44,7 +44,11 @@ void setup(int schedule)
 // Feel free to modify this function as much as you want
 void InsertWrapper(thread_t* t, thread_queue_t* q)
 {
-    InsertAtHead(t, q);
+    if (scheduling_type == FCFS) {
+        InsertAtHead(t, q);
+        return;
+    }
+    /**** Your Own Code ****/
 }
 
 // This function is called whenever a context switch is starting
@@ -69,7 +73,7 @@ thread_t* scheduler()
 
     /**** NOTE: the last running thread will be at in the `current` variable ****/
     // Make sure we still have some work to do
-    if (ready_list->size == 0 && current == NULL)
+    if (ready_list->size == 0)
         return NULL;
     switch (scheduling_type) {
     case RR: // Round Robin
@@ -92,23 +96,8 @@ thread_t* scheduler()
 
     case FCFS: // First Come, First Served
         /**** DO NOT MODIFY ****/
-        if (current == NULL) {
-            // We did not previously have a running thread
-            return ready_list->head->thread;
-        } else {
-            // We had a running thread...
-            if (current->status->state == FINISHED || current->status->state == SLEEPING || current->status->state == SUSPENDED) {
-                // ... that cannot run anymore
-                if (ready_list->size == 0) {
-                    return NULL;
-                } else {
-                    return ready_list->head->thread;
-                }
-            } else {
-                // ... that can still run
-                return current;
-            }
-        }
+        return ready_list->head->thread;
+
     default:
         return NULL;
     }

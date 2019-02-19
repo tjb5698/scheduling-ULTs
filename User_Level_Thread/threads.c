@@ -141,7 +141,7 @@ void Dispatch(int sig)
             break;
         case SLEEPING:
             if (GetCurrentTime() >= node->thread->status->wake_time) {
-                thread_enqueue(node->thread, ready_list);
+                InsertWrapper(node->thread, ready_list);
                 node->thread->status->state = READY;
             }
             break;
@@ -160,6 +160,12 @@ void Dispatch(int sig)
         }
 
         ready = ready->next;
+    }
+    // Add current thread to ready_queue if it was running
+    //   Need to do this after updating wait times because this thread was not running
+    if (current->status->state == RUNNING) {
+        current->status->state = READY;
+        InsertWrapper(current, ready_list);
     }
     // Get the new scheduled thread
     thread_t* prev = current;
@@ -269,7 +275,7 @@ int RemoveFromList(int thread_id, thread_queue_t* q)
             q->tail = NULL;
         }
         // If the head is to be deleted.
-        q->head = node->next; 
+        q->head = node->next;
 
     }
     // Tail
@@ -377,7 +383,7 @@ int ResumeThread(int thread_id)
     if (t->status->state != SUSPENDED)
         return thread_id;
 
-    thread_enqueue(t, ready_list);
+    InsertWrapper(t, ready_list);
     t->status->state = READY;
     return thread_id;
 }
