@@ -3,6 +3,7 @@
 // Functions used by the threads
 
 #include "threads.h"
+#include "my_functions.c"
 
 void simple_thread()
 {
