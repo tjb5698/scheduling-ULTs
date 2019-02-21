@@ -20,6 +20,8 @@ extern thread_queue_t* ready_list;
 extern thread_queue_t* thread_list;
 extern thread_t* current;
 
+// You may also add your own variables
+
 // This function is called once by the test file, before the thread are created
 // Feel free to modify this function as much as you want, to initialize variables or structs for instance
 void setup(int schedule)
@@ -48,7 +50,8 @@ void InsertWrapper(thread_t* t, thread_queue_t* q)
         InsertAtHead(t, q);
         return;
     }
-    /**** Your Own Code ****/
+    /**** Your Code Here ****/
+
 }
 
 // This function is called whenever a context switch is starting
@@ -64,7 +67,7 @@ void EndContextSwitch()
 // Add extra functions you want here
 
 // Manages the thread scheduling when called
-// Returns the tne running thread
+// Returns the running thread
 thread_t* scheduler()
 {
     /**** You may also add variable declarations here, or in the sections below ****/
