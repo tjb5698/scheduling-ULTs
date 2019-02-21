@@ -8,6 +8,8 @@
  * Email:
  ****/
 
+// Feel free to modify this value for test purposes
+#define SLEEP_TIME 10
 
 void counter () {
         /**** Your Code Here ****/
