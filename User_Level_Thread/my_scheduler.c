@@ -20,13 +20,17 @@ extern int scheduling_type;
 extern thread_queue_t* ready_list;
 extern thread_queue_t* thread_list;
 extern thread_t* current;
+//extern int mlot = 0;
 
 // You may also add your own variables
-
+int mlot = 0;
+thread_node_t *curr_node = NULL;
+int thread_weight = 0;
+int winner = 0;
 // This function is called once by the test file, before the thread are created
 // Feel free to modify this function as much as you want, to initialize variables or structs for instance
-void setup(int schedule)
-{
+void setup(int schedule) {
+
     printf("Student IDs:\nID_1: %s\nID_2: %s\n", ID_1, ID_2);
     srand(time(NULL));
     scheduling_type = schedule; // FCFS == 0, RR == 1, vLOT == 2, mLOT == 3
@@ -84,7 +88,8 @@ thread_t* scheduler()
         /**** Implement the Round Robin scheduler here ****/
         // Your code here
 	{
-	  thread_t *curr_head = thread_dequeue(ready_list);
+	  thread_t *curr_head = malloc(sizeof(*curr_head));
+	  curr_head = thread_dequeue(ready_list);
   	  thread_enqueue(curr_head, ready_list);
 	  return curr_head;
         }
@@ -111,14 +116,55 @@ thread_t* scheduler()
 			return curr_node->thread;
 		curr_node = curr_node->next;
 	  }
-	  return NULL;
-	}
+	 }
         /**** End Vanilla Lottery code ****/
 
     case mLOT: // Modified Lottery
         /**** Implement the Modified Lottery scheduler here ****/
         // Your code here
-        return NULL;
+    {
+	 	if (mlot == 0) {
+	      int count = 0;
+	      int list_size = thread_list->size;
+	      winner = 1 + rand() / (RAND_MAX / (list_size-1+1)+1);
+          curr_node = ready_list->head;
+	   
+	      while (curr_node != NULL) {
+		    count = count +1;
+		    thread_weight = curr_node->thread->weight;
+		    if (count == winner) {
+			  if(mlot < thread_weight-1)
+			     mlot = mlot+1;
+			  printf("mlot - %d\n",mlot );
+              printf("weight -%d\n",curr_node->thread->weight);
+              return curr_node->thread;	
+		    }
+            curr_node = curr_node->next;
+	      }
+	    }	
+	    else {
+            int count = 0;
+            curr_node = ready_list->head;
+            while (curr_node != NULL){
+                count = count+1;
+                thread_weight = curr_node->thread->weight;
+                if (count == winner) {
+                    if (mlot < (thread_weight)-1) {
+                        mlot = mlot + 1;
+                        printf("mlot - %d\n",mlot );
+                        printf("weight - %d\n",thread_weight);
+                        return curr_node->thread;
+                    }
+                    else if (mlot == (curr_node->thread->weight)-1) {
+                        mlot = 0;
+                        printf("mlot - %d\n",mlot );
+                        printf("weight - %d\n",curr_node->thread->weight);
+                        return curr_node->next->thread;
+                    }
+                } 
+		    }
+        }
+    }    
         /**** End Modified Lottery code ****/
 
     case FCFS: // First Come, First Served
