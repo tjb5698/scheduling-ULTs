@@ -8,6 +8,7 @@
  * Email:
  ****/
 #include "threads.h"
+#include <stdlib.h>
 
 // Fill out your PSU ID (xyz1234) here
 // Make sure to NOT USE your PSU number
@@ -79,34 +80,52 @@ thread_t* scheduler()
     if (ready_list->size == 0)
         return NULL;
     switch (scheduling_type) {
-    
-        case RR: // Round Robin
-            /**** Implement the Round Robin scheduler here ****/
-            // Your code here
-    	   {
-    	    thread_t *curr_head = thread_dequeue(ready_list);
-                thread_enqueue(curr_head, ready_list);
-                return curr_head;
-            }
-            /**** End Round Robin code ****/
+    case RR: // Round Robin
+        /**** Implement the Round Robin scheduler here ****/
+        // Your code here
+	{
+	  thread_t *curr_head = thread_dequeue(ready_list);
+  	  thread_enqueue(curr_head, ready_list);
+	  return curr_head;
+        }
+        /**** End Round Robin code ****/
 
-        case vLOT: // Vanilla Lottery
-            /**** Implement the Vanilla Lottery scheduler here ****/
-            // Your code here
-            return NULL;
-            /**** End Vanilla Lottery code ****/
+    case vLOT: // Vanilla Lottery
+        /**** Implement the Vanilla Lottery scheduler here ****/
+        // Your code here
+        {
+          int total_weight = 0;
+	  thread_node_t *curr_node = malloc(sizeof(*curr_node));
+	  curr_node = ready_list->head;
+	  while (curr_node != NULL) {
+	  	total_weight = total_weight + curr_node->thread->weight;
+		curr_node = curr_node->next;
+	  }
+	 
+	  int count = 0;
+	  int winner = 1 + rand() / (RAND_MAX / (total_weight-1+1)+1);
+	  curr_node = ready_list->head;
+	  while (curr_node != NULL) {
+	  	count = count + curr_node->thread->weight;
+		if (count > winner)
+			return curr_node->thread;
+		curr_node = curr_node->next;
+	  }
+	  return NULL;
+	}
+        /**** End Vanilla Lottery code ****/
 
-        case mLOT: // Modified Lottery
-            /**** Implement the Modified Lottery scheduler here ****/
-            // Your code here
-            return NULL;
-            /**** End Modified Lottery code ****/
+    case mLOT: // Modified Lottery
+        /**** Implement the Modified Lottery scheduler here ****/
+        // Your code here
+        return NULL;
+        /**** End Modified Lottery code ****/
 
-        case FCFS: // First Come, First Served
-            /**** DO NOT MODIFY ****/
-            return ready_list->head->thread;
+    case FCFS: // First Come, First Served
+        /**** DO NOT MODIFY ****/
+        return ready_list->head->thread;
 
-        default:
-            return NULL;
+    default:
+        return NULL;
     }
 }
