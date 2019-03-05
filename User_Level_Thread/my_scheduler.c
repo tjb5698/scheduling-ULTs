@@ -11,8 +11,8 @@
 
 // Fill out your PSU ID (xyz1234) here
 // Make sure to NOT USE your PSU number
-char ID_1[] = "";
-char ID_2[] = "";
+char ID_1[] = "acd5466";
+char ID_2[] = "tjb5698";
 
 // If you need to have extra variables from threads.c, add them here as `extern`
 extern int scheduling_type;
@@ -79,29 +79,34 @@ thread_t* scheduler()
     if (ready_list->size == 0)
         return NULL;
     switch (scheduling_type) {
-    case RR: // Round Robin
-        /**** Implement the Round Robin scheduler here ****/
-        // Your code here
-        return NULL;
-        /**** End Round Robin code ****/
+    
+        case RR: // Round Robin
+            /**** Implement the Round Robin scheduler here ****/
+            // Your code here
+    	   {
+    	    thread_t *curr_head = thread_dequeue(ready_list);
+                thread_enqueue(curr_head, ready_list);
+                return curr_head;
+            }
+            /**** End Round Robin code ****/
 
-    case vLOT: // Vanilla Lottery
-        /**** Implement the Vanilla Lottery scheduler here ****/
-        // Your code here
-        return NULL;
-        /**** End Vanilla Lottery code ****/
+        case vLOT: // Vanilla Lottery
+            /**** Implement the Vanilla Lottery scheduler here ****/
+            // Your code here
+            return NULL;
+            /**** End Vanilla Lottery code ****/
 
-    case mLOT: // Modified Lottery
-        /**** Implement the Modified Lottery scheduler here ****/
-        // Your code here
-        return NULL;
-        /**** End Modified Lottery code ****/
+        case mLOT: // Modified Lottery
+            /**** Implement the Modified Lottery scheduler here ****/
+            // Your code here
+            return NULL;
+            /**** End Modified Lottery code ****/
 
-    case FCFS: // First Come, First Served
-        /**** DO NOT MODIFY ****/
-        return ready_list->head->thread;
+        case FCFS: // First Come, First Served
+            /**** DO NOT MODIFY ****/
+            return ready_list->head->thread;
 
-    default:
-        return NULL;
+        default:
+            return NULL;
     }
 }
