@@ -159,7 +159,7 @@ thread_t* scheduler()
                         mlot = 0;
                         printf("mlot - %d\n",mlot );
                         printf("weight - %d\n",curr_node->thread->weight);
-                        return curr_node->next->thread;
+                        return curr_node->thread;
                     }
                 } 
 		    }
