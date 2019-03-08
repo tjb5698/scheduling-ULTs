@@ -25,7 +25,7 @@ extern int next_thread;
 
 // You may also add your own variables
 int mlot = 0;
-thread_node_t *curr_node = NULL;
+//thread_node_t *curr_node = NULL;
 int thread_weight = 0;
 int winner = 0;
 // This function is called once by the test file, before the thread are created
@@ -44,6 +44,7 @@ void setup(int schedule) {
     thread_list->size = 0;
 
     current = NULL;
+    
 
     signal(SIGVTALRM, Dispatch);
 }
@@ -66,14 +67,11 @@ void InsertWrapper(thread_t* t, thread_queue_t* q)
         return;
     }
     if (scheduling_type == mLOT) {
-        if(mlot == t->weight) {
-	  thread_enqueue(t, q);
-	  mlot = 0;
+      if (current->status->no_of_bursts % current->weight == 0)
+	  	thread_enqueue(t, q);
+	  return;
 	}
-	else
-	  InsertAtHead(t, q);
-        return;
-    }
+	
 
 }
 
@@ -178,20 +176,20 @@ thread_t* scheduler()
 		}
 	
 	  }*/ 
-	  while (1) {
-	  	if (mlot == 0){
+	   if (current == NULL)
+		return thread_list->head->thread;	
+	  if ((current->status->no_of_bursts) % (current->weight) == 0){
 		  thread_t *winner = NULL;
 		  while (winner == NULL) {
-		    winner = GetThread(1 + (rand() % next_thread));
-	  	  }
+		    winner = GetThread ( 1 + (rand() % next_thread) );
+	 	  }
 		  return winner;
 		}  
-		mlot ++;
-  		return ready_list->head->thread;
+  		return current;
 		
 		
 	  } 
-}
+
 
       
         
