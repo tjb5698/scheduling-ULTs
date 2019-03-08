@@ -20,6 +20,7 @@ extern int scheduling_type;
 extern thread_queue_t* ready_list;
 extern thread_queue_t* thread_list;
 extern thread_t* current;
+extern int next_thread;
 //extern int mlot = 0;
 
 // You may also add your own variables
@@ -65,7 +66,12 @@ void InsertWrapper(thread_t* t, thread_queue_t* q)
         return;
     }
     if (scheduling_type == mLOT) {
-        thread_enqueue(t, q);
+        if(mlot == t->weight) {
+	  thread_enqueue(t, q);
+	  mlot = 0;
+	}
+	else
+	  InsertAtHead(t, q);
         return;
     }
 
@@ -137,7 +143,7 @@ thread_t* scheduler()
         /**** Implement the Modified Lottery scheduler here ****/
         // Your code here
         {
-	  if(mlot == 0) {
+	 /* if (mlot == 0) {
 		int count =0;
 		int list_size = thread_list->size;
 		winner = 1 + rand() % list_size;
@@ -148,7 +154,7 @@ thread_t* scheduler()
 		  if (count == winner) {
 		    if(mlot < thread_weight-1)
 			mlot = mlot + 1;
-		    return curr_node->thread;
+	 	    return curr_node->thread;
 		  }
 		  curr_node = curr_node->next;
 		}
@@ -171,19 +177,21 @@ thread_t* scheduler()
 		  }
 		}
 	
-	  } 
-	 /* while (1) {
-	  	thread_t *winner = NULL;
-		while (winner == NULL) {
-		  winner = GetThread(1 + (rand() % next_thread));
-		}
-		int winner_burst_cont = winner->stat->no_of_continuous_bursts;
-		if (winner_burst_cont < winner->weight)
-			return winner;
+	  }*/ 
+	  while (1) {
+	  	if (mlot == 0){
+		  thread_t *winner = NULL;
+		  while (winner == NULL) {
+		    winner = GetThread(1 + (rand() % next_thread));
+	  	  }
+		  return winner;
+		}  
+		mlot ++;
+  		return ready_list->head->thread;
 		
-	  } */
-
-	}
+		
+	  } 
+}
 
       
         
@@ -194,6 +202,6 @@ thread_t* scheduler()
         return ready_list->head->thread;
 
     default:
-        return NULL;
+       return NULL;
     }
 }
