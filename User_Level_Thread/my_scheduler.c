@@ -7,8 +7,10 @@
  * Name:
  * Email:
  ****/
+//#define _POSIX_C_SOURCE 199309L
 #include "threads.h"
 #include <stdlib.h>
+#include <time.h>
 
 // Fill out your PSU ID (xyz1234) here
 // Make sure to NOT USE your PSU number
@@ -24,7 +26,11 @@ extern int next_thread;
 //extern int mlot = 0;
 
 // You may also add your own variables
-int mlot = 0;
+struct timespec ts_start;
+struct timespec ts_end;
+int ctxsw_count =0;
+
+
 //thread_node_t *curr_node = NULL;
 int thread_weight = 0;
 int winner = 0;
@@ -78,11 +84,20 @@ void InsertWrapper(thread_t* t, thread_queue_t* q)
 // This function is called whenever a context switch is starting
 void BeginContextSwitch()
 {
+	clock_gettime(CLOCK_MONOTONIC, &ts_start);
+	
+	ctxsw_count++;
 }
 
 // This function is called whenever a context switch is done
 void EndContextSwitch()
 {
+	clock_gettime(CLOCK_MONOTONIC, &ts_end);
+	
+	printf("Context switch %d\t", ctxsw_count);
+	printf("Elapsed timeL ");
+	printf("%lds ",(ts_end.tv_sec - ts_start.tv_sec));
+	printf("%ldns \n", (ts_end.tv_nsec - ts_start.tv_nsec)); 
 }
 
 // Add extra functions you want here
