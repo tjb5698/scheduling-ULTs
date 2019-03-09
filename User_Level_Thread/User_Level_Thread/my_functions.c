@@ -9,7 +9,7 @@
  ****/
 
 // Feel free to modify this value for test purposes
-#define SLEEP_TIME 2
+#define SLEEP_TIME 10
 
 void counter () 
 {
@@ -39,32 +39,43 @@ void counter ()
   }
 
 }
-
+/*
 void sleeping () {
+        /**** Your Code Here ****/
+ /* long tid;
+  pid_t id;
+  id = GetMyId();
+  int *ar = arr;
   
-  int id = GetMyId();
-    
   unsigned t1 = GetCurrentTime();
-  
+  int temp;
   long long int rf = 0;
   
-    if (id % 2 == 0)
-    {
-        SleepThread(SLEEP_TIME);
-        printf("sleep tid: %d; rf = %lld\n", GetMyId(), rf);
-    }
-    else
-    {
-        SleepThread(7);
-        printf("sleep tid: %d; rf = %lld\n", GetMyId(), rf);
-    }
-    while (1)
-    {
-      unsigned
-        if (((long long)t2 - (long long)t1) >= 10.0)
+  while (1)
+  {
+      rf++;
+      unsigned t2 = GetCurrentTime();
+      if (id % 2 == 0)
       {
-         printf("DELETING MYSELF (tid: %d); time now: %lld\n", GetMyId(),(long long)t2);
-   DeleteThread(GetMyId());
+        if (((long long)t2 - (long long)t1) == 5.0)
+         sleep(0.003); 
       }
-    }
-}
+
+      if (((long long)t2 - (long long)t1) >= 10.0)
+      {
+        break;
+      }
+  }
+  temp = id%100;
+  ar[temp] = rf;
+
+
+  for(int i=0 ; i<100 ; i++) {
+    printf("arr[i] = %d \n", arr[i]);
+    sum += arr[i];
+  }
+  printf("Sum = %d \n",sum);
+  CleanUp(); */
+  
+        /**** End Your Code ****/
+//}
