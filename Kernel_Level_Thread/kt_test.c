@@ -1,9 +1,10 @@
 #include "functions.h"
 #include <string.h>
-//#define NUM_THREADS 85
+//#define NUM_THREADS 1
 
 int main(int argc, char const *argv[])
 {
+  //Code to allow variable threads
   int NUM_THREADS = atoi(argv[2]);
   pthread_t threads[NUM_THREADS];
   int rc;
