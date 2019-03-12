@@ -1,23 +1,17 @@
-#include "functions.h"
+#include "threads.h"
+#include "my_functions.c"
 #include <string.h>
-#define NUM_THREADS 85
+
+#define NUM_THREADS 5
 
 int main(int argc, char const *argv[])
 {
-  thread_t threads[NUM_THREADS];
+  //thread_t threads[NUM_THREADS];
   int rc;
-  long t;
-  int *arr;
   void *tab[] = {counter, sleeping};
   int flag = -1;
 
-  arr = (int *)malloc(100 * sizeof(int));
-  long long int sum = 0;
-
   setup(FCFS);
-
-  for (int i = 0; i < 100; i++)
-    arr[i] = 0;
 
   if (argc < 2)
   {
@@ -28,28 +22,19 @@ int main(int argc, char const *argv[])
   flag = !(strcmp(argv[1], "counter")) ? 0 : 1;
 
   printf("Code under execution .. \n");
-  for (t = 0; t < NUM_THREADS; t++)
-  {
 
-   // rc = CreateThread(&threads[t], NULL, tab[flag], (void *)arr);
-    rc = CreateThread(counter, 1);
-    if (rc)
-    {
-      printf("ERROR; return code from pthread_create() is %d\n", rc);
+  for (int t = 0; t < NUM_THREADS; t++)
+  {
+    // printf("Creating thread %d\n", t);
+    rc = CreateThread(tab[flag], 1); //tab[flg], 1);
+    // printf("rc = %d\n", rc);
+    if (rc == -1)
       exit(-1);
-    }
   }
 
-  for (t = 0; t < NUM_THREADS; t++)
-    pthread_join(threads[t], NULL);
+  Go();
 
-  for (int i = 0; i < 100; i++)
-  {
-    printf("arr[%d] = %d \n", i, arr[i]);
-    sum += arr[i];
-  }
+  printf("Done.");
 
-  printf("Counter = %lld\n", sum);
-  pthread_exit(NULL);
   return 0;
 }

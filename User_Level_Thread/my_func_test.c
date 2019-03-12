@@ -23,9 +23,12 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    CreateThread(counter, 1); // 0
-    CreateThread(counter, 2); // 1
-    CreateThread(counter, 3); // 2
+    for (int i =0; i<=85; i++){
+    	CreateThread(sleeping, 1);	
+    }
+   // CreateThread(counter, 1); // 0
+   // CreateThread(counter, 2); // 1
+   // CreateThread(counter, 3); // 2
 
 
     Go();

@@ -42,29 +42,39 @@ void counter ()
 
 void sleeping () {
   
-  int id = GetMyId();
+    int id = GetMyId();
     
-  unsigned t1 = GetCurrentTime();
+    unsigned t1 = GetCurrentTime();
   
-  long long int rf = 0;
-  
+    long long int rf = 0;
+
+    printf("sleeping tid: %d; rf = %lld\n", GetMyId(), rf);
+
     if (id % 2 == 0)
     {
+        printf("Sleeping for %d...\n", SLEEP_TIME);
         SleepThread(SLEEP_TIME);
-        printf("sleep tid: %d; rf = %lld\n", GetMyId(), rf);
     }
     else
     {
+        printf("Sleeping for 7...\n");
         SleepThread(7);
-        printf("sleep tid: %d; rf = %lld\n", GetMyId(), rf);
     }
+
+    printf("sleeping tid: %d; rf = %lld\n", GetMyId(), rf);
+
     while (1)
     {
-      unsigned
-        if (((long long)t2 - (long long)t1) >= 10.0)
+      rf++;
+
+      unsigned t2 = GetCurrentTime();
+
+      if (((long long)t2 - (long long)t1) >= 10000)
       {
-         printf("DELETING MYSELF (tid: %d); time now: %lld\n", GetMyId(),(long long)t2);
-   DeleteThread(GetMyId());
+       break;
       }
     }
+
+    printf("sleeping tid: %d, rf = %lld\n", GetMyId(), rf);
+    DeleteThread(GetMyId());
 }
