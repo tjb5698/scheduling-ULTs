@@ -95,7 +95,7 @@ void EndContextSwitch()
 	clock_gettime(CLOCK_MONOTONIC, &ts_end);
 	
 	printf("Context switch %d\t", ctxsw_count);
-	printf("Elapsed timeL ");
+	printf("Elapsed time ");
 	printf("%lds ",(ts_end.tv_sec - ts_start.tv_sec));
 	printf("%ldns \n", (ts_end.tv_nsec - ts_start.tv_nsec)); 
 }

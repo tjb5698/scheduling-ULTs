@@ -2,20 +2,21 @@
 #include "my_functions.c"
 #include <string.h>
 
-#define NUM_THREADS 5
+//#define NUM_THREADS 2 
 
 int main(int argc, char const *argv[])
 {
   //thread_t threads[NUM_THREADS];
+  int NUM_THREADS = atoi(argv[2]); 
   int rc;
   void *tab[] = {counter, sleeping};
   int flag = -1;
 
-  setup(FCFS);
+  setup(RR);
 
-  if (argc < 2)
+  if (argc < 3)
   {
-    printf("Usage: %s [counter] | [sleeping]\n", argv[0]);
+    printf("Usage: %s [counter] | [sleeping]	Thread count\n", argv[0]);
     return -1;
   }
 
@@ -26,7 +27,7 @@ int main(int argc, char const *argv[])
   for (int t = 0; t < NUM_THREADS; t++)
   {
     // printf("Creating thread %d\n", t);
-    rc = CreateThread(tab[flag], 1); //tab[flg], 1);
+    rc = CreateThread(tab[flag], 1); //tab[flg], 1);  
     // printf("rc = %d\n", rc);
     if (rc == -1)
       exit(-1);

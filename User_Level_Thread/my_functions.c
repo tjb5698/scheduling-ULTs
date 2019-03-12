@@ -18,24 +18,18 @@ void counter ()
   unsigned t1 = GetCurrentTime();
 
   long long int rf = 0;
-
-  int i =0;
-   
+ 
   while (1)
   {
       unsigned t2 = GetCurrentTime(); 
-      if (i % 10000000 == 0) {
-            printf("counter tid: %d; rf = %lld; i = %d\n", GetMyId(), rf,i);
-	    i++;
-        }
-      
-      if (((long long)t2 - (long long)t1) >= 25.0)
+
+      if (((long long)t2 - (long long)t1)/1000 >= 10.0)
       {
-         printf("DELETING MYSELF (tid: %d); time now: %lld\n", GetMyId(),(long long)t2);
+         printf("counter tid: %d; rf = %lld;\n", GetMyId(), rf);
+	 printf("DELETING MYSELF (tid: %d); time now: %ld\n", GetMyId(),(long long)t2);
 	 DeleteThread(GetMyId());       
        }
       rf++;
-     // i++;
   }
 
 }
@@ -53,12 +47,12 @@ void sleeping () {
     if (id % 2 == 0)
     {
         printf("Sleeping for %d...\n", SLEEP_TIME);
-        SleepThread(SLEEP_TIME);
+        sleep(SLEEP_TIME);
     }
     else
     {
         printf("Sleeping for 7...\n");
-        SleepThread(7);
+        sleep(7);
     }
 
     printf("sleeping tid: %d; rf = %lld\n", GetMyId(), rf);
@@ -69,7 +63,7 @@ void sleeping () {
 
       unsigned t2 = GetCurrentTime();
 
-      if (((long long)t2 - (long long)t1) >= 10000)
+      if (((long long)t2 - (long long)t1)/1000 >= 10.0)
       {
        break;
       }

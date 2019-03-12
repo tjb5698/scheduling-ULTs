@@ -1,25 +1,26 @@
 #include "functions.h"
 #include <string.h>
-#define NUM_THREADS 85
+//#define NUM_THREADS 85
 
 int main(int argc, char const *argv[])
 {
+  int NUM_THREADS = atoi(argv[2]);
   pthread_t threads[NUM_THREADS];
   int rc;
   long t;
   int *arr;
   void *tab[] = {counter, sleeping};
   int flag = -1;
+  
 
   arr = (int *)malloc(100 * sizeof(int));
   long long int sum = 0;
 
   for (int i = 0; i < 100; i++)
     arr[i] = 0;
-
-  if (argc < 2)
+  if (argc < 3)
   {
-    printf("Usage: %s [counter] | [sleeping]\n", argv[0]);
+    printf("Usage: %s [counter] | [sleeping]  [thread count]\n", argv[0]);
     return -1;
   }
 
