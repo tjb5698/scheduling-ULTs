@@ -1,8 +1,7 @@
 
 // Project 2: User level thread library
 // Test file
-// DO NOT MODIFY
-
+// DO MODIFY
 #include "functions.c"
 
 int main(int argc, char* argv[])
@@ -24,7 +23,8 @@ int main(int argc, char* argv[])
     }
 
     for (int i =0; i<=85; i++){
-    	CreateThread(sleeping, 1);	
+    	CreateThread(sleeping, 1);
+        //loop to create threads, call to threads.c	
     }
    // CreateThread(counter, 1); // 0
    // CreateThread(counter, 2); // 1

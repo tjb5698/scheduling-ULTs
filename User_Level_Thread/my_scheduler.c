@@ -120,7 +120,7 @@ thread_t* scheduler()
         // Your code here
 	{
 	  thread_t *curr_head = malloc(sizeof(*curr_head));
-	  curr_head = thread_dequeue(ready_list);
+	  curr_head = thread_dequeue(ready_list); 
   	 // thread_enqueue(curr_head, ready_list);
 	  return curr_head;
 	  
@@ -135,18 +135,18 @@ thread_t* scheduler()
 	  thread_node_t *current_node = malloc(sizeof(*current_node));
 	  current_node = ready_list->head;
 	  while (current_node != NULL) {
-	  	total_weight = total_weight + current_node->thread->weight;
-		current_node = current_node->next;
+	  	total_weight = total_weight + current_node->thread->weight; //create total weight based on weight of all threads
+		current_node = current_node->next; //iterate node
 	  }
 	 // int count = 0;
-	  int winner = 1 + (rand() % total_weight);
+	  int winner = 1 + (rand() % total_weight); //select random value from total weight 
 	  current_node = ready_list->head;
 	  while (current_node != NULL) {
 	  //	count = count + (current_node->thread->weight);
 	//	if (count > winner)
-		winner = winner - (current_node->thread->weight);
-		if (winner <= 0)
-			return current_node->thread;
+		winner = winner - (current_node->thread->weight); //remove current node from the running
+		if (winner <= 0) 
+			return current_node->thread; //If no other threads, finish current thread
 		current_node = current_node->next;
 	  }
 	 }
@@ -155,52 +155,17 @@ thread_t* scheduler()
     case mLOT:  // Modified Lottery
         /**** Implement the Modified Lottery scheduler here ****/
         // Your code here
-        {
-	 /* if (mlot == 0) {
-		int count =0;
-		int list_size = thread_list->size;
-		winner = 1 + rand() % list_size;
-		curr_node = ready_list->head;
-		while (curr_node != NULL) {
-		  count ++;
-		  thread_weight = curr_node->thread->weight;
-		  if (count == winner) {
-		    if(mlot < thread_weight-1)
-			mlot = mlot + 1;
-	 	    return curr_node->thread;
-		  }
-		  curr_node = curr_node->next;
-		}
-	  }
-	  else{
-		int count = 0;
-		curr_node = ready_list->head;
-		while (curr_node != NULL){
-		  count ++;
-		  thread_weight = curr_node->thread->weight;
-		  if (count == winner) {
-		    if (mlot < (thread_weight)-1) {
-			mlot = mlot + 1;
-			return curr_node->thread;
-		    }
-		    else if (mlot == (curr_node->thread->weight)-1) {
-			mlot =0;
-			return curr_node->thread;
-		    }
-		  }
-		}
-	
-	  }*/ 
+      
 	   if (current == NULL)
-		return thread_list->head->thread;	
+		return thread_list->head->thread; //at beginning, just start with first thread	
 	  if ((current->status->no_of_bursts) % (current->weight) == 0){
 		  thread_t *winner = NULL;
 		  while (winner == NULL) {
-		    winner = GetThread ( 1 + (rand() % next_thread) );
+		    winner = GetThread ( 1 + (rand() % next_thread)); //get thread ID of random number within range of thread id
 	 	  }
 		  return winner;
 		}  
-  		return current;
+  		return current; //keep current if no others
 		
 		
 	  } 

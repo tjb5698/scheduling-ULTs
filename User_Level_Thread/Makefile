@@ -18,10 +18,10 @@ libs: libult.a
 
 project2: libult.a TestFile$(t).c
 	gcc -g -std=gnu99 -o project2 TestFile$(t).c -L . -lult -lrt
-
+#create regular project 2
 k2u: libult.a ut_test.c
 	gcc -g -std=gnu99 -o k2u ut_test.c -L . -lult -lrt
-
+#creates seperate project with alternative test file for testing 3.2 tasks
 		
 
 clean:

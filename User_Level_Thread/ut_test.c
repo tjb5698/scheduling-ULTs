@@ -9,33 +9,32 @@ int main(int argc, char const *argv[])
   //thread_t threads[NUM_THREADS];
   int NUM_THREADS = atoi(argv[2]); 
   int rc;
-  void *tab[] = {counter, sleeping};
+  void *tab[] = {counter, sleeping}; //used to select thread function at run time via argument
   int flag = -1;
 
   setup(RR);
 
   if (argc < 3)
   {
-    printf("Usage: %s [counter] | [sleeping]	Thread count\n", argv[0]);
+    printf("Usage: %s [counter] | [sleeping]	Thread count\n", argv[0]); //if no/invalid argument, boot user and prompt for valid argument
     return -1;
   }
 
   flag = !(strcmp(argv[1], "counter")) ? 0 : 1;
-
+  //create flag to pass to createthread which selects thread function
   printf("Code under execution .. \n");
 
   for (int t = 0; t < NUM_THREADS; t++)
   {
-    // printf("Creating thread %d\n", t);
-    rc = CreateThread(tab[flag], 1); //tab[flg], 1);  
-    // printf("rc = %d\n", rc);
+    // create number of threads defined by user
+    rc = CreateThread(tab[flag], 1); //return value checks if vaild thread is created
     if (rc == -1)
       exit(-1);
   }
 
-  Go();
+  Go(); //call the scheduler, begin running threads
 
-  printf("Done.");
+  printf("Done."); 
 
-  return 0;
+  return 0; 
 }
